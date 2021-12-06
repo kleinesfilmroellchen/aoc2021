@@ -9,7 +9,7 @@ lazy_static! {
 }
 
 fn main() {
-    part1();
+    part2();
 }
 
 fn part1() {
@@ -34,6 +34,32 @@ fn part1() {
             }
         })
         .fold((0, 0), |(a, b), (c, d)| (a + c, b + d));
+    println!(
+        "depth {}, distance {}, mult {}",
+        depth,
+        distance,
+        depth * distance
+    );
+}
+
+fn part2() {
+    let mut aim = 0;
+    let mut distance = 0;
+    let mut depth = 0;
+    for line in fs::read_to_string("input").unwrap().lines() {
+        if let Some(mtch) = down_or_up.captures(line) {
+            aim += i64::from_str(&mtch[2]).unwrap()
+                * match &mtch[1] {
+                    "down" => 1,
+                    "up" => -1,
+                    _ => unreachable!(),
+                };
+        } else if let Some(mtch) = forward.captures(line) {
+            let val = i64::from_str(&mtch[1]).unwrap();
+            depth += aim * val;
+            distance += val;
+        }
+    }
     println!(
         "depth {}, distance {}, mult {}",
         depth,
